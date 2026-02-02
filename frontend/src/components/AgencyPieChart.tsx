@@ -7,14 +7,18 @@ export default function AgencyPieChart() {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/metrics/agencies")
+    fetch("/api/metrics/agencies")
       .then(res => res.json())
       .then(json => setData(json))
       .catch(err => console.error("Failed to load agency metrics", err));
   }, []);
 
+  // Compute values for conditional rendering
+  const values = data.map(a => a.totalWords);
+  const hasData = values.some(v => v > 0);
+
   useEffect(() => {
-    if (data.length === 0) return;
+    if (!hasData) return; // prevent chart creation when empty
 
     const ctx = chartRef.current.getContext("2d");
 
@@ -29,7 +33,7 @@ export default function AgencyPieChart() {
         datasets: [
           {
             label: "Total Words per Agency",
-            data: data.map(a => a.totalWords),
+            data: values,
             backgroundColor: [
               "#0078d4", "#00a65a", "#f39c12", "#d81b60",
               "#6f42c1", "#17a2b8", "#ffc107", "#28a745"
@@ -44,12 +48,17 @@ export default function AgencyPieChart() {
         }
       }
     });
-  }, [data]);
+  }, [data, hasData]);
 
   return (
     <div style={{ padding: "20px" }}>
       <h2>Total Words Distribution by Agency</h2>
-      <canvas ref={chartRef} height="200"></canvas>
+
+      {hasData ? (
+        <canvas ref={chartRef} height="200"></canvas>
+      ) : (
+        <p>No metrics available yet.</p>
+      )}
     </div>
   );
 }

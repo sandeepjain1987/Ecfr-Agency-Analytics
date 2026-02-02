@@ -3,9 +3,8 @@ package gov.usds.ecfr.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.usds.ecfr.domain.Agency;
-import gov.usds.ecfr.domain.CfrReferenceEntity;
 import gov.usds.ecfr.domain.Part;
-import gov.usds.ecfr.dto.StructureNode;
+import gov.usds.ecfr.dto.StructureNodeDto;
 import gov.usds.ecfr.ecfr.EcfrVersionerClient;
 import gov.usds.ecfr.repository.AgencyRepository;
 import gov.usds.ecfr.repository.CfrReferenceRepository;
@@ -16,11 +15,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.parser.Parser;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
 
-import javax.xml.parsers.DocumentBuilder;
-import java.io.StringReader;
 import java.util.*;
 
 @Service
@@ -39,7 +34,7 @@ public class EcfrIngestionService {
      * Ingests a single title for a given date.
      * Example: date = "2025-01-30", title = 1
      */
-    @Transactional
+    /*@Transactional
     public void ingestTitle(int titleNumber) {
         String date = versionerClient.getLatestSnapshotDateForTitle(titleNumber);
 
@@ -104,7 +99,7 @@ public class EcfrIngestionService {
         agency.setComplexityScore(totalComplexity);
         agency.setChecksum(textAnalysisService.checksum(combinedText.toString()));
         agencyRepository.save(agency);
-    }
+    }*/
     @Transactional
     public void ingestAgency(Long agencyId) {
         System.out.print("Ingestion Started for Agency id:"+ agencyId);
@@ -124,9 +119,9 @@ public class EcfrIngestionService {
             System.out.print("Processing title: "+ titleNumber + " chapter: "+ chapter+ " for Agency: "+ agency.getDisplayName());
             String date = versionerClient.getLatestSnapshotDateForTitle(titleNumber);
 
-            StructureNode title1 = versionerClient.loadStructure(titleNumber);
-            StructureNode chapterIII = cfrStructureService.getChapter(title1, chapter);
-            List<StructureNode> parts = cfrStructureService.getParts(chapterIII);
+            StructureNodeDto title1 = versionerClient.loadStructure(titleNumber);
+            StructureNodeDto chapterIII = cfrStructureService.getChapter(title1, chapter);
+            List<StructureNodeDto> parts = cfrStructureService.getParts(chapterIII);
 
 
 
@@ -159,59 +154,6 @@ public class EcfrIngestionService {
 
         System.out.print("Ingestion Completed for Agency id:" + agencyId);
     }
-
-   /* @Transactional
-    public void ingestAgency(Long agencyId) {
-
-        Agency agency = agencyRepository.findById(agencyId)
-                .orElseThrow(() -> new RuntimeException("Agency not found"));
-
-        List<Object[]> rows = cfrReferenceRepository.findTitleAndChapterByAgencyId(agencyId);
-
-        long totalWords = 0L;
-        int totalComplexity = 0;
-        StringBuilder combinedText = new StringBuilder();
-
-        for (Object[] row : rows) {
-
-            int titleNumber = (int) row[0];
-            String chapter = (String) row[1];
-
-            String date = versionerClient.getLatestSnapshotDateForTitle(titleNumber);
-
-            StructureNode title1 = versionerClient.loadStructure(titleNumber);
-            StructureNode chapterNode = cfrStructureService.getChapter(title1, chapter);
-            List<StructureNode> parts = cfrStructureService.getParts(chapterNode);
-
-            for (StructureNode partNode : parts) {
-
-                if (!partNode.getLabel().contains("Reserved")) {
-
-                    String partNumber = partNode.getIdentifier();
-
-                    String titleXml = versionerClient.getTitleXml(date, titleNumber).block();
-                    String partXml = versionerClient.extractPartFromTitleXml(titleXml, partNumber);
-
-                    Part parsed = textAnalysisService.parsePartXml(partXml, titleNumber, partNumber);
-                    parsed.setAgency(agency);
-                    partRepository.save(parsed);
-
-                    totalWords += parsed.getWordCount();
-                    totalComplexity += parsed.getComplexityScore();
-                    combinedText.append(parsed.getText());
-                }
-            }
-        }
-
-        // FINAL TOTALS FOR THE ENTIRE AGENCY
-        agency.setTotalWordCount(totalWords);
-        agency.setComplexityScore(totalComplexity);
-        agency.setChecksum(textAnalysisService.checksum(combinedText.toString()));
-
-        agencyRepository.save(agency);
-
-        System.out.println("Ingestion Completed for Agency id:" + agencyId);
-    }*/
 
 
     /**
@@ -258,12 +200,12 @@ public class EcfrIngestionService {
 
 
 
-    public StructureNode getChapter(StructureNode titleNode, String chapterIdentifier) {
+    public StructureNodeDto getChapter(StructureNodeDto titleNode, String chapterIdentifier) {
         if (titleNode == null || titleNode.getChildren() == null) {
             return null;
         }
 
-        for (StructureNode child : titleNode.getChildren()) {
+        for (StructureNodeDto child : titleNode.getChildren()) {
             if ("chapter".equalsIgnoreCase(child.getType())) {
 
                 // Match by identifier (I, II, III, etc.)

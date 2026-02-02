@@ -4,9 +4,7 @@ package gov.usds.ecfr.ecfr;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.usds.ecfr.dto.StructureNode;
-import gov.usds.ecfr.dto.TitleDto;
-import lombok.RequiredArgsConstructor;
+import gov.usds.ecfr.dto.StructureNodeDto;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.MediaType;
@@ -30,8 +28,6 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
 
 @Component
 //@RequiredArgsConstructor
@@ -48,17 +44,6 @@ public class EcfrVersionerClient {
                                 .maxInMemorySize(100 * 1024 * 1024)) // 100 MB
                         .build()).build();
     }
-    /*private final WebClient webClient = WebClient.builder()
-            .baseUrl("https://www.ecfr.gov/api/versioner/v1")
-            .exchangeStrategies(ExchangeStrategies.builder()
-                    .codecs(configurer -> configurer
-                            .defaultCodecs()
-                            .maxInMemorySize(10 * 1024 * 1024)) // 10 MB
-                    .build())
-
-//            .filter(logRequest())
-//            .filter(logResponse())
-            .build();*/
 
     public Mono<String> getTitleStructure(String date, int title) {
         return webClient.get()
@@ -71,8 +56,6 @@ public class EcfrVersionerClient {
                 .uri("/full/{date}/title-{title}?format=xml", date, title)
                 .header("Accept", "application/xml")
                 .header("User-Agent", "Mozilla/5.0")
-
-
 
                 .retrieve()
                 .bodyToMono(String.class);
@@ -113,28 +96,6 @@ public class EcfrVersionerClient {
 
     }
 
-
-
-    public List<TitleDto> getAvailableTitles() {
-        return webClient.get()
-                .uri("/titles.json")
-                .retrieve()
-                .bodyToMono(JsonNode.class)
-                .map(json -> {
-                    List<TitleDto> list = new ArrayList<>();
-                    json.get("titles").forEach(t -> {
-                        list.add(new TitleDto(
-                                t.get("number").asInt(),
-                                t.get("name").asText()
-                        ));
-                    });
-                    return list;
-                })
-                .block();
-    }
-
-
-
     private ExchangeFilterFunction logRequest() {
         return ExchangeFilterFunction.ofRequestProcessor(request -> {
             System.out.println("➡️ WebClient Request: " + request.method() + " " + request.url());
@@ -163,7 +124,7 @@ public class EcfrVersionerClient {
                 .reduce(String::concat);
     }
 
-    public StructureNode loadStructure(int titleNumber) {
+    public StructureNodeDto loadStructure(int titleNumber) {
         String date =  getLatestSnapshotDateForTitle(titleNumber);
         String url = String.format(
                 "https://www.ecfr.gov/api/versioner/v1/structure/%s/title-%d.json",
@@ -177,7 +138,7 @@ public class EcfrVersionerClient {
                 .bodyToMono(String.class)
                 .map(json -> {
                     try {
-                        return objectMapper.readValue(json, StructureNode.class);
+                        return objectMapper.readValue(json, StructureNodeDto.class);
                     } catch (JsonProcessingException e) {
                         throw new RuntimeException(e);
                     }

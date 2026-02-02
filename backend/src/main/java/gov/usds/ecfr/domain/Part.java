@@ -23,8 +23,9 @@ public class Part {
     private String partNumber;
 
     // Full extracted text from XML
-    @Lob
-    @Column(columnDefinition = "CLOB")
+//    @Lob
+//    @Column(columnDefinition = "CLOB")
+    @Column(columnDefinition = "TEXT")
     private String text;
 
     // Computed metrics

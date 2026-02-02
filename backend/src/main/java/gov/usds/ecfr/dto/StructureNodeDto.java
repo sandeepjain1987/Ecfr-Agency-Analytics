@@ -1,6 +1,5 @@
 package gov.usds.ecfr.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
@@ -10,7 +9,7 @@ import java.util.List;
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 
-public class StructureNode {
+public class StructureNodeDto {
     private String identifier;
 
     private String label;
@@ -29,7 +28,7 @@ public class StructureNode {
 
     private List<String> volumes;
 
-    private List<StructureNode> children;
+    private List<StructureNodeDto> children;
 
     @JsonProperty("descendant_range")
     private String descendantRange;

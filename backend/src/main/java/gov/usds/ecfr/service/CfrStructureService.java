@@ -1,10 +1,8 @@
 package gov.usds.ecfr.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.usds.ecfr.dto.StructureNode;
+import gov.usds.ecfr.dto.StructureNodeDto;
 import gov.usds.ecfr.ecfr.EcfrVersionerClient;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -36,14 +34,14 @@ public class CfrStructureService {
     // ------------------------------------------------------------
     // 2. Get Chapter by Identifier (e.g., "III")
     // ------------------------------------------------------------
-    public StructureNode getChapter(StructureNode titleNode, String chapterIdentifier) {
+    public StructureNodeDto getChapter(StructureNodeDto titleNode, String chapterIdentifier) {
         if (titleNode == null || titleNode.getChildren() == null) {
             return null;
         }
 
         String target = normalize(chapterIdentifier);
 
-        for (StructureNode child : titleNode.getChildren()) {
+        for (StructureNodeDto child : titleNode.getChildren()) {
             if (!"chapter".equalsIgnoreCase(child.getType()) &&
                     !"chap".equalsIgnoreCase(child.getType())) {
                 continue;
@@ -77,13 +75,13 @@ public class CfrStructureService {
     // ------------------------------------------------------------
     // 3. Get all Parts under a Chapter (recursive)
     // ------------------------------------------------------------
-    public List<StructureNode> getParts(StructureNode chapterNode) {
-        List<StructureNode> parts = new ArrayList<>();
+    public List<StructureNodeDto> getParts(StructureNodeDto chapterNode) {
+        List<StructureNodeDto> parts = new ArrayList<>();
         collectParts(chapterNode, parts);
         return parts;
     }
 
-    private void collectParts(StructureNode node, List<StructureNode> parts) {
+    private void collectParts(StructureNodeDto node, List<StructureNodeDto> parts) {
         if (node == null) return;
 
         if ("part".equalsIgnoreCase(node.getType())) {
@@ -91,7 +89,7 @@ public class CfrStructureService {
         }
 
         if (node.getChildren() != null) {
-            for (StructureNode child : node.getChildren()) {
+            for (StructureNodeDto child : node.getChildren()) {
                 collectParts(child, parts);
             }
         }
@@ -100,13 +98,13 @@ public class CfrStructureService {
     // ------------------------------------------------------------
     // 4. Get all Sections under a Part (recursive)
     // ------------------------------------------------------------
-    public List<StructureNode> getSections(StructureNode partNode) {
-        List<StructureNode> sections = new ArrayList<>();
+    public List<StructureNodeDto> getSections(StructureNodeDto partNode) {
+        List<StructureNodeDto> sections = new ArrayList<>();
         collectSections(partNode, sections);
         return sections;
     }
 
-    private void collectSections(StructureNode node, List<StructureNode> sections) {
+    private void collectSections(StructureNodeDto node, List<StructureNodeDto> sections) {
         if (node == null) return;
 
         if ("section".equalsIgnoreCase(node.getType())) {
@@ -114,7 +112,7 @@ public class CfrStructureService {
         }
 
         if (node.getChildren() != null) {
-            for (StructureNode child : node.getChildren()) {
+            for (StructureNodeDto child : node.getChildren()) {
                 collectSections(child, sections);
             }
         }
@@ -123,22 +121,22 @@ public class CfrStructureService {
     // ------------------------------------------------------------
     // 5. Convenience: Get Parts for a Title + Chapter
     // ------------------------------------------------------------
-    public List<StructureNode> getPartsForChapter(int titleNumber, String chapterIdentifier) {
-        StructureNode titleNode = ecfrVersionerClient.loadStructure(titleNumber);
-        StructureNode chapterNode = getChapter(titleNode, chapterIdentifier);
+    public List<StructureNodeDto> getPartsForChapter(int titleNumber, String chapterIdentifier) {
+        StructureNodeDto titleNode = ecfrVersionerClient.loadStructure(titleNumber);
+        StructureNodeDto chapterNode = getChapter(titleNode, chapterIdentifier);
         return getParts(chapterNode);
     }
 
     // ------------------------------------------------------------
     // 6. Convenience: Get Sections for a Title + Chapter + Part
     // ------------------------------------------------------------
-    public List<StructureNode> getSectionsForPart(int titleNumber, String chapterIdentifier, String partIdentifier) {
-        StructureNode titleNode = ecfrVersionerClient.loadStructure(titleNumber);
-        StructureNode chapterNode = getChapter(titleNode, chapterIdentifier);
+    public List<StructureNodeDto> getSectionsForPart(int titleNumber, String chapterIdentifier, String partIdentifier) {
+        StructureNodeDto titleNode = ecfrVersionerClient.loadStructure(titleNumber);
+        StructureNodeDto chapterNode = getChapter(titleNode, chapterIdentifier);
 
-        List<StructureNode> parts = getParts(chapterNode);
+        List<StructureNodeDto> parts = getParts(chapterNode);
 
-        for (StructureNode part : parts) {
+        for (StructureNodeDto part : parts) {
             if (part.getIdentifier().equalsIgnoreCase(partIdentifier)) {
                 return getSections(part);
             }
