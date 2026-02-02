@@ -22,12 +22,23 @@ public class EcfrClient implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        // GUARD: skip ingestion if data already exists
-        if (agencyRepository.count() > 0) {
+        try {
+            // Try a lightweight query to check if the table exists
+            agencyRepository.count();
+        } catch (Exception e) {
+            System.out.println("Schema not ready — skipping ingestion on startup.");
+            return;
+        }
+
+        // If we reach here, the table exists
+        long count = agencyRepository.count();
+        if (count > 0) {
             System.out.println("Agencies already loaded — skipping ingestion.");
             return;
         }
-        System.out.println("No agencies found — running ingestion...");
+
+        System.out.println("Starting ingestion...");
         service.fetchAndStoreAgencies();
+
     }
 }
