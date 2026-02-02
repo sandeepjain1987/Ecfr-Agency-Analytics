@@ -8,7 +8,6 @@ export default function AgencyIngestor() {
 
   // Load agencies on mount
   useEffect(() => {
-//     fetch("http://localhost:8080/api/agencies")
   fetch("/api/agencies")
       .then(res => res.json())
       .then(data => setAgencies(data))
@@ -21,7 +20,6 @@ export default function AgencyIngestor() {
     setLoading(true);
     setMessage("");
 
-//     fetch(`http://localhost:8080/api/ingest/agency/${selected}`, {
       fetch(`/api/ingest/agency/${selected}`, {
       method: "POST"
     })
