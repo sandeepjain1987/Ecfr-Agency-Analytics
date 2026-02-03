@@ -1,3 +1,9 @@
+<img width="907" height="393" alt="image" src="https://github.com/user-attachments/assets/82404780-8611-470d-aef2-6a4bcb089d79" />
+
+<img width="630" height="722" alt="image" src="https://github.com/user-attachments/assets/1bbbc403-8b5c-4c93-80a8-9b51dd471849" />
+
+
+
 ECFR Agency Analytics
 A full‑stack, cloud‑hosted analytics platform that ingests, stores, and visualizes U.S. Federal agency metadata from the Electronic Code of Federal Regulations (eCFR).
 Built with Spring Boot, PostgreSQL, React + Vite, and deployed entirely on Render.
