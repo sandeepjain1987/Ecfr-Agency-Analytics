@@ -6,10 +6,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -45,9 +41,7 @@ public class TextAnalysisService {
                 count++;
             }
         }
-
         return count;
-
     }
 
     /**
@@ -103,7 +97,7 @@ public class TextAnalysisService {
         return count;
     }
 
-    public Part parsePartXml(String xml, int titleNumber, String partNumber)  {
+    public Part parsePartXml(String xml, int titleNumber, String partNumber) {
 
         if (xml == null || xml.isBlank()) {
             throw new IllegalStateException("Versioner returned empty XML");
@@ -168,6 +162,7 @@ public class TextAnalysisService {
 
         return part;
     }
+
     public String extractCfrText(String xml) throws Exception {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(false);
@@ -209,89 +204,4 @@ public class TextAnalysisService {
             sb.append(text.trim()).append("\n\n");
         }
     }
-
-    public String validateAndExtract(String xml) throws Exception {
-
-        // 1. Basic checks
-        if (xml == null || xml.isBlank()) {
-            throw new IllegalStateException("Versioner returned empty XML");
-        }
-
-        // 2. Structural checks
-        if (!xml.contains("<SECTION") || !xml.contains("<P")) {
-            throw new IllegalStateException("Versioner returned incomplete CFR XML");
-        }
-
-        // 3. Parse with DOM
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        factory.setNamespaceAware(false);
-        factory.setIgnoringComments(true);
-        factory.setCoalescing(true);
-
-        DocumentBuilder builder = factory.newDocumentBuilder();
-        org.w3c.dom.Document doc;
-
-        try {
-            doc = builder.parse(new InputSource(new StringReader(xml)));
-        } catch (Exception e) {
-            throw new IllegalStateException("XML parsing failed — malformed XML", e);
-        }
-
-        // 4. DOM structural validation
-        if (doc.getElementsByTagName("SECTION").getLength() == 0) {
-            throw new IllegalStateException("Parsed XML contains no SECTION elements");
-        }
-
-        if (doc.getElementsByTagName("P").getLength() < 10) {
-            throw new IllegalStateException("Parsed XML contains too few P elements — XML is truncated");
-        }
-
-        // 5. Extract text
-        return extractCfrText(String.valueOf(doc));
-    }
-
-    /*public String extractCfrText(Document doc) {
-        StringBuilder sb = new StringBuilder();
-
-       // HEAD (section headings)
-        doc.select("HEAD, head").forEach(head -> {
-            appendClean(sb, head.text());
-        });
-
-        // Paragraphs <P> (uppercase or lowercase)
-        doc.select("P, p").forEach(p -> {
-            appendClean(sb, p.text());
-            System.out.println("P-TAG: " + p.text());
-            System.out.println("P count = " + doc.select("P, p").size());
-
-        });
-
-
-        // Stars <STARS/> (uppercase or lowercase)
-        doc.select("STARS, stars").forEach(stars -> {
-            appendClean(sb, "* * *");
-        });
-
-        // Footnotes <FP>
-        doc.select("FP, fp").forEach(fp -> {
-            appendClean(sb, fp.text());
-        });
-
-        // Editorial notes <EDNOTE>
-        doc.select("EDNOTE, ednote").forEach(ed -> {
-            appendClean(sb, ed.text());
-        });
-
-
-
-        return sb.toString().trim();
-
-    }
-    private void appendClean(StringBuilder sb, String text) {
-        if (text != null && !text.isBlank()) {
-            sb.append(text.trim()).append("\n\n");
-        }
-    }*/
-
-
 }

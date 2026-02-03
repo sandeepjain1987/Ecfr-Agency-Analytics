@@ -39,6 +39,5 @@ public class EcfrClient implements CommandLineRunner {
 
         System.out.println("Starting ingestion...");
         service.fetchAndStoreAgencies();
-
     }
 }
