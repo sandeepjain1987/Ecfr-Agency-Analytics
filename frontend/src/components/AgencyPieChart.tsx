@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { fetchAgencies } from "../api/client";
 import Chart from "chart.js/auto";
 
 export default function AgencyPieChart() {

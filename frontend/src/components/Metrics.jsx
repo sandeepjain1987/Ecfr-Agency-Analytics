@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { fetchAgencies } from "../api/client";
 
 export default function AgencyMetrics() {
   const [agencies, setAgencies] = useState([]);
