@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/ingest")
 @RequiredArgsConstructor
-//@CrossOrigin
 public class IngestionController {
 
     private final EcfrIngestionService ingestionService;

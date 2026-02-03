@@ -16,23 +16,14 @@ public class Part {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // eCFR Title number (e.g., 1, 5, 12, 40)
     private Integer titleNumber;
-
-    // eCFR Part number (e.g., "301", "9301")
     private String partNumber;
 
-    // Full extracted text from XML
-//    @Lob
-//    @Column(columnDefinition = "CLOB")
     @Column(columnDefinition = "TEXT")
     private String text;
 
-    // Computed metrics
     private Long wordCount;
-
     private Integer complexityScore;
-
     private String checksum;
 
     // Many parts belong to one agency

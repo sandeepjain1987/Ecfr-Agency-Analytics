@@ -30,13 +30,10 @@ import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 
 @Component
-//@RequiredArgsConstructor
 public class EcfrVersionerClient {
     private final ObjectMapper objectMapper = new ObjectMapper();
     WebClient webClient;
     public EcfrVersionerClient() {
-        //System.out.println("EcfrVersionerClient constructor USED");
-
         this.webClient = WebClient.builder().baseUrl("https://www.ecfr.gov/api/versioner/v1")
                 .exchangeStrategies(ExchangeStrategies.builder()
                         .codecs(configurer -> configurer
@@ -60,8 +57,6 @@ public class EcfrVersionerClient {
                 .retrieve()
                 .bodyToMono(String.class);
     }
-
-
     public String getLatestSnapshotDateForTitle(int titleNumber) {
         JsonNode json = webClient.get()
                 .uri("/titles.json")
@@ -85,17 +80,6 @@ public class EcfrVersionerClient {
 
 
     }
-    public Mono<String> getPartXmlFromChapter(String date, int title, String chapterNo) {
-
-        String url = String.format(
-                "https://www.ecfr.gov/api/versioner/v1/full/%s/title-%d.xml?chapter=%s",
-                date, title, chapterNo
-        );
-
-        return fetchXml(url);
-
-    }
-
     private ExchangeFilterFunction logRequest() {
         return ExchangeFilterFunction.ofRequestProcessor(request -> {
             System.out.println("➡️ WebClient Request: " + request.method() + " " + request.url());
@@ -194,6 +178,4 @@ public class EcfrVersionerClient {
             throw new RuntimeException("Failed to extract part " + partNumber + " from Title XML", e);
         }
     }
-
-
 }

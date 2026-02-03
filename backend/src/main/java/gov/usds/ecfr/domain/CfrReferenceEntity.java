@@ -14,11 +14,7 @@ public class CfrReferenceEntity {
 
     private Integer title;
     private String chapter;
-
-//    @ManyToOne
-   // @JoinColumn(name = "part_id")
-//    private Part part;
-private String part;
+    private String part;
     private String subtitle;
 
     @ManyToOne

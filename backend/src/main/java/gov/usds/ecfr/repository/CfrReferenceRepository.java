@@ -14,5 +14,4 @@ public interface CfrReferenceRepository extends JpaRepository<CfrReferenceEntity
     where c.agency.id = :agencyId
     """)
     List<Object[]> findTitleAndChapterByAgencyId(@Param("agencyId") Long agencyId);
-
 }

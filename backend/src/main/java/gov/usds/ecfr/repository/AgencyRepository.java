@@ -7,9 +7,4 @@ import java.util.Optional;
 
 public interface AgencyRepository extends JpaRepository<Agency, Long> {
     Optional<Agency> findByName(String name);
-
-//    Optional<Agency> findBySlug(String slug);
-
-
-
 }

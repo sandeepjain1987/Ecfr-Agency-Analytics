@@ -1,7 +1,5 @@
 package gov.usds.ecfr.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,19 +18,13 @@ public class Agency {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // internal DB id
 
-/*    @Column(unique = true)
-    private String agencyId; // API natural key*/
-
     @Column(unique = true)
     private String name;
 
     private String shortName;
     private String displayName;
     private String sortableName;
-
-
     private String slug;
-
     private Long totalWordCount;
     private Integer complexityScore;
     private String checksum;

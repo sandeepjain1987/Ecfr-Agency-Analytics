@@ -11,7 +11,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/metrics")
-//@CrossOrigin(origins = "http://localhost:5173")
 public class AgencySummaryController {
 
     private final AgencySummaryService service;

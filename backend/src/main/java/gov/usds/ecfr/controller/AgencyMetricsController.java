@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/metrics")
-//@CrossOrigin(origins = "http://localhost:5173") // adjust for your Vite port
 public class AgencyMetricsController {
 
     private final AgencyMetricsService agencyMetricsService;
@@ -19,5 +18,4 @@ public class AgencyMetricsController {
     public AgencyMetricsResponse getAgencyMetrics(@PathVariable Long agencyId) {
         return agencyMetricsService.getMetricsForAgency(agencyId);
     }
-
 }

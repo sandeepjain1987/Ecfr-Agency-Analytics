@@ -1,6 +1,5 @@
 package gov.usds.ecfr.dto;
 
-
 public class AgencyMetricsResponse {
 
     private long agencyId;

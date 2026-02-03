@@ -27,12 +27,7 @@ public class CfrStructureService {
     }
 
     // ------------------------------------------------------------
-    // 1. Load Title Structure JSON
-    // ------------------------------------------------------------
-
-
-    // ------------------------------------------------------------
-    // 2. Get Chapter by Identifier (e.g., "III")
+    // 1. Get Chapter by Identifier (e.g., "III")
     // ------------------------------------------------------------
     public StructureNodeDto getChapter(StructureNodeDto titleNode, String chapterIdentifier) {
         if (titleNode == null || titleNode.getChildren() == null) {

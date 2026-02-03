@@ -13,7 +13,6 @@ public class CfrReferenceDto {
     private Integer title;
     private String chapter;
 
-//    @JsonProperty("subtitle")
     private String subtitle; // appears in some responses
     private String part;
 }

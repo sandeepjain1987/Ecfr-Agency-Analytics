@@ -30,76 +30,6 @@ public class EcfrIngestionService {
     private final CfrReferenceRepository cfrReferenceRepository;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    /**
-     * Ingests a single title for a given date.
-     * Example: date = "2025-01-30", title = 1
-     */
-    /*@Transactional
-    public void ingestTitle(int titleNumber) {
-        String date = versionerClient.getLatestSnapshotDateForTitle(titleNumber);
-
-        String structureJson = versionerClient.getTitleStructure(date, titleNumber)
-                .blockOptional()
-                .orElseThrow(() -> new IllegalStateException("No structure JSON returned"));
-
-        JsonNode root;
-        try {
-            root = objectMapper.readTree(structureJson);
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to parse structure JSON", e);
-        }
-
-        // The structure JSON has a "children" array starting at title level
-        List<PartNode> parts = new ArrayList<>();
-        collectParts(root.get("children"), titleNumber, parts);
-
-        String agencyName = "Administrative Conference of the United States";
-        Agency agency = agencyRepository.findByName(agencyName)
-                .orElseGet(() -> agencyRepository.save(
-                        Agency.builder()
-                                .name(agencyName)
-                                .displayName(agencyName)
-                                .totalWordCount(0L)
-                                .complexityScore(0)
-                                .checksum(null)
-                                .build()
-                ));
-
-        long totalWords = 0L;
-        int totalComplexity = 0;
-        StringBuilder combinedText = new StringBuilder();
-
-        for (PartNode partNode : parts) {
-            String xml = versionerClient.getPartXml(date, titleNumber, partNode.partNumber())
-                    .blockOptional()
-                    .orElse("");
-
-            String text = extractPlainTextFromXml(xml);
-
-            long wc = textAnalysisService.wordCount(text);
-            int cs = textAnalysisService.complexityScore(text);
-            String hash = textAnalysisService.checksum(text);
-
-            Part part = Part.builder()
-                    .titleNumber(titleNumber)
-                    .partNumber(partNode.partNumber())
-                    .text(text)
-                    .wordCount(wc)
-                    .complexityScore(cs)
-                    .agency(agency)
-                    .build();
-            partRepository.save(part);
-
-            totalWords += wc;
-            totalComplexity += cs;
-            combinedText.append(text);
-        }
-
-        agency.setTotalWordCount(totalWords);
-        agency.setComplexityScore(totalComplexity);
-        agency.setChecksum(textAnalysisService.checksum(combinedText.toString()));
-        agencyRepository.save(agency);
-    }*/
     @Transactional
     public void ingestAgency(Long agencyId) {
         System.out.print("Ingestion Started for Agency id:"+ agencyId);
@@ -155,11 +85,10 @@ public class EcfrIngestionService {
         System.out.print("Ingestion Completed for Agency id:" + agencyId);
     }
 
-
     /**
      * Recursively walks the structure tree and collects all "part" nodes.
      */
-    private void collectParts(JsonNode childrenNode, int titleNumber, List<PartNode> parts) {
+    /*private void collectParts(JsonNode childrenNode, int titleNumber, List<PartNode> parts) {
         if (childrenNode == null || !childrenNode.isArray()) return;
 
         for (JsonNode node : childrenNode) {
@@ -179,12 +108,12 @@ public class EcfrIngestionService {
                 collectParts(childChildren, titleNumber, parts);
             }
         }
-    }
+    }*/
 
     /**
      * Extracts plain text from the eCFR XML using Jsoup.
      */
-    private String extractPlainTextFromXml(String xml) {
+   /* private String extractPlainTextFromXml(String xml) {
         if (xml == null || xml.isBlank()) return "";
         try {
             Document doc = Jsoup.parse(xml, "", Parser.xmlParser());
@@ -194,13 +123,13 @@ public class EcfrIngestionService {
             // Fallback: return raw XML if parsing fails
             return xml;
         }
-    }
+    }*/
 
-    private record PartNode(int titleNumber, String partNumber, String heading) {}
+    //private record PartNode(int titleNumber, String partNumber, String heading) {}
 
 
 
-    public StructureNodeDto getChapter(StructureNodeDto titleNode, String chapterIdentifier) {
+   /* public StructureNodeDto getChapter(StructureNodeDto titleNode, String chapterIdentifier) {
         if (titleNode == null || titleNode.getChildren() == null) {
             return null;
         }
@@ -222,7 +151,7 @@ public class EcfrIngestionService {
         }
 
         return null;
-    }
+    }*/
 
 
 

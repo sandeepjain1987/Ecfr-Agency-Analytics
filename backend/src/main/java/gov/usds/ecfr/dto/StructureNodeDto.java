@@ -15,7 +15,7 @@ public class StructureNodeDto {
     private String label;
 
     @JsonProperty("label_level")
-    private String labelLevel;   // <-- MUST be String
+    private String labelLevel;
 
     @JsonProperty("label_description")
     private String labelDescription;
@@ -35,6 +35,4 @@ public class StructureNodeDto {
 
     @JsonProperty("received_on")
     private String receivedOn;
-
-
 }
