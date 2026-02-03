@@ -8,7 +8,7 @@ export default function AgencyPieChart() {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    fetch("/api/metrics/agencies")
+    fetch("https://ecfr-agency-analytics.onrender.com/api/metrics/agencies")
       .then(res => res.json())
       .then(json => setData(json))
       .catch(err => console.error("Failed to load agency metrics", err));

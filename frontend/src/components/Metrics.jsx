@@ -9,7 +9,7 @@ export default function AgencyMetrics() {
 
   // Load agencies on mount
   useEffect(() => {
-    fetch("/api/agencies")
+    fetch("https://ecfr-agency-analytics.onrender.com/api/agencies")
       .then(res => res.json())
       .then(data => setAgencies(data))
       .catch(err => console.error("Failed to load agencies", err));
@@ -21,7 +21,7 @@ export default function AgencyMetrics() {
     setLoading(true);
     setMetrics(null);
 
-    fetch(`/api/metrics/agency/${selected}`)
+    fetch(`https://ecfr-agency-analytics.onrender.com/api/metrics/agency/${selected}`)
       .then(res => res.json())
       .then(data => setMetrics(data))
       .catch(err => console.error("Failed to load metrics", err))
