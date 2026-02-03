@@ -9,18 +9,23 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class CorsConfig {
 
-    @Value("${frontend.port}")
-    private int frontendPort;
+    /*@Value("${frontend.port}")
+    private int frontendPort;*/
 
     @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:" + frontendPort)
+           /*     registry.addMapping("/**")
+                        .allowedOrigins("*")
                         .allowedMethods("*")
+                        .allowedHeaders("*");*/
+                registry.addMapping("/**")
+                        .allowedOrigins("https://ecfr-agency-analytics-ui.onrender.com")
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*");
+
             }
         };
     }
