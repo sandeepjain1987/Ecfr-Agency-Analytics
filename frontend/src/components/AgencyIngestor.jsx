@@ -21,7 +21,7 @@ export default function AgencyIngestor() {
     setLoading(true);
     setMessage("");
 
-      fetch(`https://ecfr-agency-analytics.onrender.com/api/agencies/api/ingest/agency/${selected}`, {
+      fetch(`https://ecfr-agency-analytics.onrender.com/api/ingest/agency/${selected}`, {
       method: "POST"
     })
       .then(res => {
