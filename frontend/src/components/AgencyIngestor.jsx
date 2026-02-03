@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { fetchAgencies } from "../api/client";
+//import { fetchAgencies } from "../api/client";
 
 export default function AgencyIngestor() {
   const [agencies, setAgencies] = useState([]);
@@ -9,7 +9,7 @@ export default function AgencyIngestor() {
 
   // Load agencies on mount
   useEffect(() => {
-  fetch("/api/agencies")
+  fetch("https://ecfr-agency-analytics.onrender.com/api/agencies")
       .then(res => res.json())
       .then(data => setAgencies(data))
       .catch(err => console.error("Failed to load agencies", err));
@@ -21,7 +21,7 @@ export default function AgencyIngestor() {
     setLoading(true);
     setMessage("");
 
-      fetch(`/api/ingest/agency/${selected}`, {
+      fetch(`https://ecfr-agency-analytics.onrender.com/api/agencies/api/ingest/agency/${selected}`, {
       method: "POST"
     })
       .then(res => {
